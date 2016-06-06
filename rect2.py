@@ -8,10 +8,14 @@ Use arrow keys.
 '''
 
 screen = pygame.display.set_mode((800,600))
+screen.fill( (200,200,255) )
 
 rect = pygame.Rect(400,300,60,40)
+rectlast = (0,0,0,0)
 
 clock =pygame.time.Clock()
+lastTick = pygame.time.get_ticks()
+totalTime = pygame.time.get_ticks()
 
 while True:
 	for event in pygame.event.get():
@@ -19,6 +23,10 @@ while True:
 			sys.exit()
 
 	#Process Player Input
+	timeChange = pygame.time.get_ticks() -totalTime
+	totalTime = pygame.time.get_ticks()
+	vel = timeChange / 16
+
 	up = pygame.key.get_pressed()[pygame.K_UP]
 	down = pygame.key.get_pressed()[pygame.K_DOWN]
 	right = pygame.key.get_pressed()[pygame.K_RIGHT]
@@ -26,13 +34,13 @@ while True:
 
 	#Updating Game State Logic
 	if up:
-		rect.y += -1
+		rect.y += -3*vel
 	if down:
-		rect.y += +1
+		rect.y += +3*vel
 	if right:
-		rect.x += +1
+		rect.x += +3*vel
 	if left:
-		rect.x += -1
+		rect.x += -3*vel
 
 	if rect.x<0:
 		rect.x = 0
@@ -43,8 +51,9 @@ while True:
 	if rect.y > screen.get_height() - rect.height:
 		rect.y = screen.get_height() - rect.height
 
-	#Rendering
-	screen.fill((200,200,255))
+	#Rendering	
+	pygame.draw.rect(screen,(200,200,255),rectlast)
 	pygame.draw.rect(screen,(255,255,255),rect)
 	pygame.display.flip()
 	clock.tick(60)
+	rectlast = pygame.Rect(rect.x,rect.y,rect.width,rect.height)
